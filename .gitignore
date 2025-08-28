@@ -1,6 +1,12 @@
 .env
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
 
 eval/results
 figures
 test_figs
 train_rope_scaling/data
+train_embedding/data
+utils/GQA_data
