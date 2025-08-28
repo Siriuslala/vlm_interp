@@ -6136,7 +6136,7 @@ def plot_vit_sim_violin_plot(model_name):
     legend_patches = [Patch(color=sns.color_palette(color)[i], label=group_names[i]) for i in range(len(group_names))]
     plt.legend(handles=legend_patches, framealpha=0.5, fontsize=9)
     
-    save_path = root_dir / "figures/vit_sims_{model_name}.pdf"
+    save_path = root_dir / f"figures/vit_sims_{model_name}.pdf"
     plt.savefig(save_path, bbox_inches='tight')
 
 if __name__ == "__main__":

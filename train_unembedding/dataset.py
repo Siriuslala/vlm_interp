@@ -11,18 +11,25 @@ import jsonlines
 from PIL import Image
 import torch
 
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
 
 class VisionDecoderDataset(Dataset):
     
     def __init__(self, split="train"):
-        
-        data_root = "/archive/private/liyueyan"
-        GQA_path = os.path.join(data_root, "GQA", "images")
-        COCO_path = os.path.join(data_root, "Hallucination", "coco", "train2014")
-        TextVQA_path = os.path.join(data_root, "TextVQA", "data", "images")
-        
+
+        data_root = root_dir / "data"
+        GQA_path = data_root / "GQA" / "images"
+        COCO_path = data_root / "Hallucination" / "coco" / "train2014"
+        TextVQA_path = data_root / "TextVQA" / "data" / "images"
+
         val_data = []
-        val_dataset_path = "/home/liyueyan/Interpretability/mm/train_unembedding/data/val_dataset.jsonl"
+        val_dataset_path = data_root / "val_dataset.jsonl"
         with jsonlines.open(val_dataset_path, "r") as f:
             for line in f:
                 val_data.append({

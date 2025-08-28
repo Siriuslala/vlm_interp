@@ -30,8 +30,15 @@ from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 from collections import Counter
 
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
 import sys
-sys.path.append("/raid_sdd/lyy/Interpretability/lyy/mm")
+sys.path.append(root_dir)
 from eval.data_utils import *
 from patch.monkey_patch import *
 
@@ -49,12 +56,11 @@ import string
 
 
 MODEL_NAME_TO_PATH = {
-    "qwen2_5_vl": "/raid_sdd/lyy/hf/Qwen/Qwen2.5-VL-7B-Instruct",
-    "qwen2_5_vl_3b": "/raid_sdd/lyy/hf/Qwen/Qwen2.5-VL-3B-Instruct",
-    "qwen2_vl_7b": "/raid_sdd/lyy/hf/Qwen/Qwen2-VL-7B-Instruct",
-    "qwen2_vl_2b": "/raid_sdd/lyy/hf/Qwen/Qwen2-VL-2B-Instruct",
-    "llava1_5_7b": "/raid_sdd/lyy/hf/models--LLaVA-1.5-7B",
-    "llava1_6_mistral_7b": "/raid_sdd/lyy/hf/models--LLaVA-NeXT-Mistral-7B",
+    "qwen2_5_vl": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "qwen2_5_vl_3b": "Qwen/Qwen2.5-VL-3B-Instruct",
+    "qwen2_vl_7b": "Qwen/Qwen2-VL-7B-Instruct",
+    "qwen2_vl_2b": "Qwen/Qwen2-VL-2B-Instruct",
+    "llava1_5_7b": "llava-hf/llava-1.5-7b-hf",  # "llava-hf/llava-1.5-7b-hf", "liuhaotian/llava-v1.5-7b"
     "internvl2_5_8b": "OpenGVLab/InternVL2_5-8B",
 }
 
@@ -93,14 +99,14 @@ def load_data(dataset_name, model_name, processor, data_num=1000, random=False, 
                 "/raid_sdd/lyy/dataset/GQA/images/images"
             ]
             dataset = GQADataset(data_path, data_num=data_num, random_select=random)
-            data_collator = GQACcollator(processor, vision_process_func=vision_process_func, model_name=model_name)
+            data_collator = GQACollator(processor, vision_process_func=vision_process_func, model_name=model_name)
         elif "spatial" in dataset_name:
             data_path = [
                 "/raid_sdd/lyy/Interpretability/lyy/mm/utils/GQA_data/gqa_spatial.jsonl",
                 "/raid_sdd/lyy/dataset/GQA/images/images"
             ]
             dataset = GQADataset(data_path, data_num=data_num, random_select=random)
-            data_collator = GQACcollator(processor, vision_process_func=vision_process_func, model_name=model_name)
+            data_collator = GQACollator(processor, vision_process_func=vision_process_func, model_name=model_name)
         else:
             root_dir="/raid_sdd/lyy/dataset/whatsup_vlms/data/whatsup_vlms_data"
             if dataset_name == "gqa_1":
@@ -122,7 +128,7 @@ def load_data(dataset_name, model_name, processor, data_num=1000, random=False, 
             "/raid_sdd/lyy/dataset/GQA/images/images"
         ]
         qa_mode = kwargs.get("QA_mode", True)
-        data_collator = GQACcollator(processor, vision_process_func=vision_process_func, model_name=model_name, QA_mode=qa_mode)
+        data_collator = GQACollator(processor, vision_process_func=vision_process_func, model_name=model_name, QA_mode=qa_mode)
         random=True
         dataset = GQADataset(data_path, data_num=data_num, random_select=random)
     else:

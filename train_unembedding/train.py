@@ -16,9 +16,14 @@ from torch.optim.lr_scheduler import CosineAnnealingLR, LambdaLR, CosineAnnealin
 from qwen_vl_utils import process_vision_info as process_vision_info_qwen
 
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
 import sys
-project_root = Path("/home/liyueyan/Interpretability/mm")
-sys.path.append(str(project_root))
+sys.path.append(str(root_dir))
 
 from patch.monkey_patch import *
 from model.unembedding import VisionTokenDecoder
@@ -28,7 +33,6 @@ from tqdm import tqdm
 import argparse
 import jsonlines
 
-data_dir = Path("/datacache/private/liyueyan")
 
 MODEL_NAME_TO_PATH = {
     "qwen2_5_vl": "Qwen/Qwen2.5-VL-7B-Instruct",

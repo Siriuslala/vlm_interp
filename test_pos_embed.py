@@ -375,9 +375,9 @@ def generate_batch_responses(
                     print(f"pred: [{out}], gold_ans: {sample["answer"]}")
                 
                 # if "pope" in dataset_name and not out.lower() == sample["answer"]:
-                #     bad_case_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/pope/bad_case"
+                #     bad_case_dir = root_dir / "test_figs/pope/bad_case"
                 #     data_type = dataset_name.split("_")[-1]  # e.g., "random", "popular", "adversarial"
-                #     image_path = os.path.join(f"/raid_sdd/lyy/dataset/POPE/images/{data_type}", sample["image"])
+                #     image_path = os.path.join(fdata_dir / "POPE/images/{data_type}", sample["image"])
                 #     sample_dir = os.path.join(bad_case_dir, f"{model_name}_{dataset_name}_{sample["question"]}_{sample["answer"]}")
                 #     os.makedirs(sample_dir, exist_ok=True)
                 #     shutil.copy(image_path, sample_dir)
@@ -515,7 +515,7 @@ def test_delete_pos_embed_qwen(
     random=False,  # 是否随机从测试集里采样
     ):
     
-    exp_save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_delete_pos_embed"
+    exp_save_dir = root_dir / "eval/GQA/results/test_delete_pos_embed"
     save_dir = os.path.join(exp_save_dir, f"{model_name}")
     os.makedirs(save_dir, exist_ok=True)
     
@@ -641,7 +641,7 @@ def test_delete_pos_embed(
     random=False,  # 是否随机从测试集里采样
     ):
     
-    exp_save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_delete_pos_embed"
+    exp_save_dir = root_dir / "eval/GQA/results/test_delete_pos_embed"
     save_dir = os.path.join(exp_save_dir, f"{model_name}")
     os.makedirs(save_dir, exist_ok=True)
     
@@ -742,7 +742,7 @@ def test_delete_image_pos_embed_qwen(
     tag="0"
 ):
     
-    exp_save_dir = f"/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_delete_image_pos_embed_{tag}"
+    exp_save_dir = root_dir / f"eval/GQA/results/test_delete_image_pos_embed_{tag}"
     save_dir = os.path.join(exp_save_dir, f"{model_name}")
     os.makedirs(save_dir, exist_ok=True)
     
@@ -805,7 +805,7 @@ def test_delete_image_pos_embed(
     tag="0"
     ):
     
-    exp_save_dir = f"/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_delete_image_pos_embed_{tag}"
+    exp_save_dir = root_dir / f"eval/GQA/results/test_delete_image_pos_embed_{tag}"
     save_dir = os.path.join(exp_save_dir, f"{model_name}")
     os.makedirs(save_dir, exist_ok=True)
     
@@ -905,9 +905,9 @@ def test_shuffle_image_tokens(
     tag="0"
 ):
     if delete_vision_token:
-        exp_save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_shuffle_image_tokens_delete_vision_token"
+        exp_save_dir = root_dir / "eval/GQA/results/test_shuffle_image_tokens_delete_vision_token"
     else:
-        exp_save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_shuffle_image_tokens"
+        exp_save_dir = root_dir / "eval/GQA/results/test_shuffle_image_tokens"
     save_dir = os.path.join(exp_save_dir, f"{model_name}")
     os.makedirs(save_dir, exist_ok=True)
     
@@ -957,7 +957,7 @@ def test_shuffle_image_pos_ids(
         random=False,
     ):
     
-    exp_save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_shuffle_image_pos_ids"
+    exp_save_dir = root_dir / "eval/GQA/results/test_shuffle_image_pos_ids"
     save_dir = os.path.join(exp_save_dir, f"{model_name}")
     os.makedirs(save_dir, exist_ok=True)
     
@@ -1004,7 +1004,7 @@ def test_add_pos_embed(
     random=False,
     ):
     
-    exp_save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_add_pos_embed"
+    exp_save_dir = root_dir / "eval/GQA/results/test_add_pos_embed"
     save_dir = os.path.join(exp_save_dir, f"{model_name}")
     os.makedirs(save_dir, exist_ok=True)
     
@@ -1079,7 +1079,7 @@ def test_add_pos_embed(
     return acc
 
 def plot_delete_pos_embed(
-        final_path="/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_delete_pos_embed/qwen2_5_vl/del_pos_embed-qwen2_5_vl.jsonl",
+        final_path=root_dir / "eval/GQA/results/test_delete_pos_embed/qwen2_5_vl/del_pos_embed-qwen2_5_vl.jsonl",
         region="vit", 
         layer_by_layer="and_all"
     ):
@@ -1094,7 +1094,7 @@ def plot_delete_pos_embed(
                 accs.append(data["acc"])
     layer_ids = [layer_id + 1 for layer_id in layer_ids]
     
-    figure_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/figures"
+    figure_dir = root_dir / "figures"
     tag = "layer_and_after" if layer_by_layer == "and_all" else "layer_by_layer"
     model_name = ""
     if "qwen" in final_path:
@@ -1160,7 +1160,7 @@ def plot_delete_pos_embed(
     plt.savefig(save_path, bbox_inches='tight')
 
 def plot_delete_pos_embed_with_std_error(
-    final_dir="/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_delete_pos_embed/qwen2_5_vl",
+    final_dir=root_dir / "eval/GQA/results/test_delete_pos_embed/qwen2_5_vl",
     region="vit", 
     layer_by_layer="and_all"
 ):
@@ -1182,7 +1182,7 @@ def plot_delete_pos_embed_with_std_error(
         all_accs.append(accs)
     layer_ids = [layer_id + 1 for layer_id in layer_ids]
         
-    figure_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/figures"
+    figure_dir = root_dir / "figures"
     tag = "layer_and_after" if layer_by_layer == "and_all" else "layer_by_layer"
     
     save_path = os.path.join(figure_dir, f"delete_pos_embed-qwen2_5_vl-in_{region}-{tag}-new.pdf")
@@ -1231,7 +1231,7 @@ def plot_delete_pos_embed_with_std_error(
     plt.savefig(save_path, bbox_inches='tight')
  
 def plot_delete_image_pos_embed(model_name, layer_by_layer="and_all", normal_acc=0.612):
-    final_dir = f"/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_delete_image_pos_embed_0/{model_name}"
+    final_dir = root_dir / f"eval/GQA/results/test_delete_image_pos_embed_0/{model_name}"
     
     # plot: delete only in ViT, layer and after
     layer_ids = list(range(32)) if "llava" in model_name else list(range(28))
@@ -1254,7 +1254,7 @@ def plot_delete_image_pos_embed(model_name, layer_by_layer="and_all", normal_acc
             
     layer_ids = [layer_id + 1 for layer_id in layer_ids]
             
-    figure_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/figures"
+    figure_dir = root_dir / "figures"
     tag = "layer_and_after" if layer_by_layer == "and_all" else "layer_by_layer"
     save_path = os.path.join(figure_dir, f"delete_image_pos_embed-{model_name}-{tag}_new.pdf")
 
@@ -1308,15 +1308,15 @@ def plot_delete_image_pos_embed(model_name, layer_by_layer="and_all", normal_acc
 
 if __name__ == "__main__":
     
-    # anno_path = "/raid_sdd/lyy/dataset/VQA_v2/v2_mscoco_val2014_annotations.json"
-    # qn_path = "/raid_sdd/lyy/dataset/VQA_v2/v2_OpenEnded_mscoco_val2014_questions.json"
-    # save_path = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/vqa/results/test_normal/llava1_5_7b/normal-llava1_5_7b_0.jsonl"
+    # anno_path = data_dir / "VQA_v2/v2_mscoco_val2014_annotations.json"
+    # qn_path = data_dir / "VQA_v2/v2_OpenEnded_mscoco_val2014_questions.json"
+    # save_path = root_dir / "eval/vqa/results/test_normal/llava1_5_7b/normal-llava1_5_7b_0.jsonl"
     # eval_vqa = evaluate_vqa(anno_path, qn_path, save_path)
     # print(f"eval_vqa: {eval_vqa}")
     # pass
 
-    # /raid_sdd/lyy/Interpretability/lyy/mm/checkpoints/normal/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32/checkpoint-1875
-    # /raid_sdd/lyy/Interpretability/lyy/mm/checkpoints/rope_scaling/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32-scaling_type_poly-poly_alpha_49-poly_p_8/checkpoint-1875
+    # work_dir / "checkpoints/normal/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32/checkpoint-1875
+    # work_dir / "checkpoints/rope_scaling/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32-scaling_type_poly-poly_alpha_49-poly_p_8/checkpoint-1875
     model_name = "qwen2_5_vl"  # qwen2_5_vl, llava1_5_7b, internvl2_5_8b
     accs = []
     for i in range(10):
@@ -1585,7 +1585,7 @@ if __name__ == "__main__":
     # plot_delete_pos_embed_with_std_error(region="vit", layer_by_layer="and_all")
     # plot_delete_image_pos_embed(layer_by_layer="and_all")    
     
-    # path_name = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_shuffle_image_tokens_delete_vision_token/qwen2_5_vl/shuffle_image_tokens-qwen2_5_vl_"
+    # path_name = root_dir / "eval/GQA/results/test_shuffle_image_tokens_delete_vision_token/qwen2_5_vl/shuffle_image_tokens-qwen2_5_vl_"
     # for i in range(5):
     #     path = path_name
     #     path += str(i) + ".jsonl"

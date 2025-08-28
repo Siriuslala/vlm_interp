@@ -43,8 +43,7 @@ def draw_loss_curve(log_paths, draw_val=False):
 
 
 if __name__ == "__main__":
-    # log_dir = "/work/liyueyan/Interpretability/mm/checkpoints_vision_decoder/llava1_5_7b-epoch2-bsz16-lr1e-4-alpha0.7-temp2.5-patience5"
-    # log_dir = "/work/liyueyan/Interpretability/mm/checkpoints_vision_decoder/qwen2_5_vl-epoch1-bsz32-lr1e-4-alpha0.9-temp5.0-patience10"
+    
     log_dirs = [
         Path(work_dir / "checkpoints_vision_decoder/qwen2_5_vl-epoch1-bsz32-lr2e-4-warmup1000-alpha0.8-temp2.5-patience10"),
         Path(work_dir / "checkpoints_vision_decoder/qwen2_5_vl-epoch1-bsz32-lr2e-4-warmup1000-alpha0.8-temp4.0-patience10"),
