@@ -11,5 +11,5 @@ train_rope_scaling/data/
 train_embedding/data/
 utils/GQA_data/
 
-requirements.txt
+requirements_mm.txt
 README0.md
