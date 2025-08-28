@@ -1,0 +1,6 @@
+.env
+
+eval/results
+figures
+test_figs
+train_rope_scaling/data
