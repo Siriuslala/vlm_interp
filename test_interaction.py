@@ -38,7 +38,7 @@ data_dir = Path(os.getenv('DATA_DIR'))
 work_dir = Path(os.getenv('WORK_DIR'))
 
 import sys
-sys.path.append(root_dir)
+sys.path.append(str(root_dir))
 from eval.data_utils import *
 from patch.monkey_patch import *
 

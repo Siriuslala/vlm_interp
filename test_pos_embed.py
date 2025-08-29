@@ -19,8 +19,18 @@ import torch
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
+import sys
+sys.path.append(str(root_dir))
 
 from eval.data_utils import *
 from eval.CHAIR.utils.chair_new import evaluate_chair
@@ -30,22 +40,14 @@ from patch.monkey_patch import *
 from utils import load_image_intern
 from model.qwen2_vl_rope_scaling import Qwen2VLForConditionalGeneration_rope_scaling, Qwen2_5_VLForConditionalGeneration_rope_scaling
 
-from pathlib import Path
 from typing import List, Dict, Union
 from tqdm import tqdm, trange
 import jsonlines
 import json
-import os
 import glob
 import numpy as np
 import shutil
 import re
-
-from dotenv import load_dotenv
-load_dotenv(dotenv_path=Path(__file__).parent / '.env')
-root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
-data_dir = Path(os.getenv('DATA_DIR'))
-work_dir = Path(os.getenv('WORK_DIR'))
 
 
 MODEL_NAME_TO_PATH = {

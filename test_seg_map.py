@@ -31,6 +31,8 @@ from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 from collections import Counter
 
+import os
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=Path(__file__).parent / '.env')
 root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
@@ -38,7 +40,7 @@ data_dir = Path(os.getenv('DATA_DIR'))
 work_dir = Path(os.getenv('WORK_DIR'))
 
 import sys
-sys.path.append(root_dir)
+sys.path.append(str(root_dir))
 
 from eval.data_utils import *
 from eval.CHAIR.utils.chair_new import evaluate_chair
@@ -257,6 +259,8 @@ def load_model(model_name, device, use_flash_attention=True):
 
 def get_model_inputs(model_name, processor, vision_process_func, image_paths, prompts):
     
+    image_paths = map(str, image_paths)
+
     if any(name in model_name for name in ["qwen"]):
         batch_messages = []
         for img_path, prompt in zip(image_paths, prompts):
@@ -1254,7 +1258,9 @@ def select_unembedding_layer(
         norms = (norms - norms.min()) / (norms.max() - norms.min())
         
         # draw norm heat map
-        norm_save_path = os.path.join(image_save_dir, f"norm_llm_{layer_id}.svg")
+        norm_save_dir = os.path.join(image_save_dir, "norms")
+        os.makedirs(norm_save_dir, exist_ok=True)
+        norm_save_path = os.path.join(norm_save_dir, f"norm_llm_{layer_id}.svg")
         dwg = svgwrite.Drawing(
             size=(f"{svg_width}px", f"{svg_height}px"),
             viewBox=(f"0 0 {svg_width} {svg_height}")
@@ -1647,7 +1653,7 @@ def seg_with_unembedding_tokens_qwen(
             
             draw.text((text_x, text_y), text, fill="black", font=font)
         
-        save_path = os.path.join(image_save_dir, f"token-vit_{layer_id}-unembed_llm_{unembed_llm_layer}.png")
+        save_path = os.path.join(image_save_dir, f"token-vit_{layer_id}-unembed_llm_{unembed_llm_layer}.pdf")
         seg_map.save(save_path)
         
         # save text tokens
@@ -4480,8 +4486,9 @@ if __name__ == "__main__":
     # image_path = root_dir / "test_figs/pope/bad_case/llava_pope_adversarial_Is there a dog in the image?_no/483.png"
     # image_path = root_dir / "test_figs/pope/bad_case/llava_pope_adversarial_Is there a fire hydrant in the image?_yes/2404.png"
     # image_path = root_dir / "test_figs/mme/code_0007.png"
-    # check_emergence = False
-    # select_unembedding_layer(device="cuda:1", model_name="qwen2_5_vl", image_path=image_path, check_emergence=check_emergence)  # "llava1_5_7b", "qwen2_5_vl"
+    image_path = root_dir / "test_figs/gqa/2332870.jpg"
+    check_emergence = False
+    select_unembedding_layer(device="cuda:3", model_name="qwen2_5_vl", image_path=image_path, check_emergence=check_emergence)  # "llava1_5_7b", "qwen2_5_vl"
     
     # select_unembedding_layer_batch(device="cuda:2", model_name="llava1_5_7b", batch_size=8, bi_dir_att=True)
     
@@ -4511,14 +4518,14 @@ if __name__ == "__main__":
     # # fig_dir = root_dir / "test_figs/whatsup"
     # # image_ids = ["mug_left_of_plate"]
     # for image_id in image_ids:
-    #     seg_with_unembedding_tokens_svg(
-    #         device="cuda:1",
-    #         model_name="llava1_5_7b",
-    #         image_path=os.path.join(fig_dir, f"{image_id}.jpg"),
-    #         original_size=True,
-    #         unembed_llm_layer=24,
-    #         # delete_pos_embed=True,
-    #     )
+        # seg_with_unembedding_tokens_svg(
+        #     device="cuda:3",
+        #     model_name="llava1_5_7b",
+        #     image_path=os.path.join(fig_dir, f"{image_id}.jpg"),
+        #     original_size=True,
+        #     unembed_llm_layer=24,
+        #     # delete_pos_embed=True,
+        # )
         
     # analyze_semantic_segmentation(
     #     image_ids=["2354453", "2338056", "2339558", "2416755", "2332040"], 
@@ -4568,90 +4575,10 @@ if __name__ == "__main__":
     #     avg_ratio = None
     # print(f"model: {model_name}, dataset: {dataset_name}, avg_acc: {avg_acc}, avg_ratio: {avg_ratio}, accs: {accs}")
     
-    # GQA
-    # llava1_5_7b(del all) avg_acc: 0.5974, avg_ratio: 0.16114993029257135, accs: [0.611, 0.6, 0.615, 0.583, 0.592, 0.592, 0.604, 0.601, 0.579, 0.597]
-    # avg_acc: 0.5944, avg_ratio: 0.3072021061652645, accs: [0.603, 0.592, 0.585, 0.601, 0.596, 0.593, 0.585, 0.591, 0.603, 0.595]
-        
-    # llava1_5_7b(method2: adaptive select hidden states) 
-    # pope_random: 0.8976 (random1000: 0.904, 0.902)
-    # pope_popular: 0.866
-    # pope_adversarial: 0.805
-    
-    # !!! llava1_5_7b(method3(turnback): punc + conjunctives + digits ..., Top3)
-    # token compression, with a little influence on hallucination performance
-    # pope_random: 
-    # pope_popular: 85.03
-    # pope_adversarial: 83.166
-    # coco500: {'CHAIRs': 0.68, 'CHAIRi': 0.21134849529060418}
-    # coco1000: {'CHAIRs': 0.685, 'CHAIRi': 0.2110362755524046}
-    
-    # llava1_5_7b(method4: runlength)
-    # GQA: avg_acc: 0.6035999999999999, avg_ratio: 0.8801180555555556, accs: [0.577, 0.61, 0.635, 0.609, 0.587]
-    # GQA1: avg_acc: 0.6013999999999999, avg_ratio: 0.8803181527612575, accs: [0.613, 0.593, 0.592, 0.616, 0.603, 0.6, 0.611, 0.593, 0.587, 0.606]
-    # pope_random: 
-    # pope_popular: 
-    # pope_adversarial:
-    # coco500(runlength all patches): {'CHAIRs': 0.498, 'CHAIRi': 0.14972972972972973}
-    # coco500(runlength meaningless patches): {'CHAIRs': 0.506, 'CHAIRi': 0.14456847263817044}
-    # coco500(runlength meaningless patches leftmost): {'CHAIRs': 0.51, 'CHAIRi': 0.1434818256354195}
-    
-    
-    # llava1_5_7b(method5: runlength_adaptive, only meaningless tokens)
-    # GQA: avg_acc: 0.6016, avg_ratio: 0.879117430004254, accs: [0.596, 0.625, 0.588, 0.609, 0.616, 0.585, 0.606, 0.582, 0.608, 0.601]
-    # GQA1: avg_acc: 0.606, avg_ratio: 0.8606525405959211, accs: [0.612, 0.604, 0.628, 0.608, 0.584, 0.591, 0.607, 0.586, 0.619, 0.621]
-    # pope random: 86.00
-    # pope popular: 84.83
-    # coco500: {'CHAIRs': 0.508, 'CHAIRi': 0.1436270547022366}
-    
-    
-    # llava1_5_7b(method5.1: runlength_adaptive, compress all tokens, random select)
-    # VQA: avg_acc: 48.666000000000004, avg_ratio: None, accs: [47.27, 47.18, 48.11, 48.84, 48.35, 47.35, 50.74, 50.39, 47.72, 50.71]
-    # vqa, avg_acc: 50.13, avg_ratio: 0.672853180765063, accs: [52.66, 49.58, 48.4, 51.23, 49.11, 49.88, 48.12, 50.31, 50.39, 51.62]
-    # GQA: avg_acc: 0.5887, avg_ratio: None, accs: [0.586, 0.609, 0.587, 0.571, 0.58, 0.574, 0.585, 0.616, 0.583, 0.596]
-    # GQA1: avg_acc: 0.6075, avg_ratio: None, accs: [0.634, 0.601, 0.612, 0.576, 0.595, 0.607, 0.607, 0.631, 0.601, 0.611]
-    # pope random: llava1_5_7b, avg_acc: 0.8619539846615538, avg_ratio: 0.7373414209917833, accs: [0.8619539846615538]
-    # pope popular: acc: 0.8503333333333334, precision: 0.8699011016084186, recall: 0.8503333333333334, f1: 0.8483274640453329
-    # pope adversarial: acc: 0.8343333333333334, precision: 0.8477848796218171, recall: 0.8343333333333334, f1: 0.8327157879383708
-    
-    # llava1_5_7b(method5.2: runlength_adaptive, del punctuations, compress all tokens)
-    # VQA: avg_acc: 49.232, avg_ratio: None, accs: [47.65, 49.59, 49.07, 48.3, 51.48, 51.62, 50.25, 47.97, 48.9, 47.49]
-    # vqa1, avg_acc: 48.213, avg_ratio: 0.4799977693039021, accs: [47.75, 48.27, 47.31, 48.43, 49.42, 48.85, 47.94, 47.87, 48.12, 48.17]
-    # GQA: avg_acc: 0.603, avg_ratio: None, accs: [0.612, 0.607, 0.585, 0.605, 0.602, 0.615, 0.601, 0.614, 0.589, 0.6]
-    # pope random: acc: 0.8592864288096032, precision: 0.8820700054583861, recall: 0.8592457193684678, f1: 0.8571471464149812
-    # pope popular: 0.47624945726336687 acc: 0.8503333333333334, precision: 0.8691900861747972, recall: 0.8503333333333334, f1: 0.8483975212825907
-    # pope adversarial: avg_ratio: 0.5044097222222222 0.8306666666666667, precision: 0.8424285548594478, recall: 0.8306666666666667, f1: 0.8291999879857209
-    
-    # # llava1_5_7b(method5.3: runlength_adaptive, del punctuations, compress all tokens, top3)
-    # vqa, avg_acc: 48.72, avg_ratio: 0.4765780279358875, accs: [48.87, 48.99, 47.67, 47.75, 48.22, 50.7, 48.11, 47.3, 50.8, 48.79]
-    # GQA, avg_acc: 0.5938, avg_ratio: None, accs: [0.608, 0.579, 0.562, 0.609, 0.614, 0.592, 0.592, 0.595, 0.597, 0.614, 0.587, 0.593, 0.583, 0.591, 0.589, 0.602, 0.591, 0.59, 0.588, 0.6]    
-    # GQA1, avg_acc: 0.5984999999999999, avg_ratio: None, accs: [0.611, 0.583, 0.628, 0.603, 0.593, 0.576, 0.599, 0.59, 0.605, 0.597]
-    
-    # QWEN =====================================================================================
-    
-    # qwen2.5_vl_7b (method 5.1: runlength_adaptive, compress all tokens, random select):
-    # vqa, avg_acc: 78.098, avg_ratio: 0.7688803798051562, accs: [79.45, 79.63, 78.06, 77.84, 77.03, 77.51, 77.32, 78.91, 76.63, 78.6]
-    # pope random: 0.8769589863287762, precision: 0.8972865219103335, recall: 0.8769212808539026, f1: 0.8753569477206538
-    # pope popular: acc: 0.8706666666666667, precision: 0.8865434671373166, recall: 0.8706666666666667, f1: 0.8693248360049144
-    # pope adversarial: avg_ratio: 0.6863431539505804 acc: 0.8506666666666667, precision: 0.8673868504376978, recall: 0.8506666666666667, f1: 0.848948030929689
-    # mme: avg_ratio: 0.9166923383145626
-    
-    # qwen2.5_vl_7b (method 5.2: runlength_adaptive, del punctuations, compress all tokens, random select):
-    # GQA, avg_acc: 0.5979, avg_ratio: 0.6933858260901296, accs: [0.607, 0.615, 0.592, 0.592, 0.586, 0.589, 0.595, 0.61, 0.619, 0.574]
-    # vqa, avg_acc: 76.905, avg_ratio: 0.7013909005121105, accs: [77.82, 76.81, 78.74, 76.08, 77.73, 78.43, 75.36, 75.53, 76.35, 76.2]
-    # pope random: avg_ratio: 0.6926977505485936 acc: 0.863621207069023, precision: 0.8887414774807676, recall: 0.8635788303313321, f1: 0.8613720246783567
-    # pope popular: avg_ratio: 0.6941209347251469 acc: 0.857, precision: 0.8776802603348977, recall: 0.857, f1: 0.8550153045033463
-    # pope adversarial: avg_ratio: 0.6863431539505804 acc: 0.8506666666666667, precision: 0.8673868504376978, recall: 0.8506666666666667, f1: 0.848948030929689
-    # mme: avg_ratio: 0.6986551899783143
-    
-    # qwen2.5_vl_7b (method 5.3: runlength_adaptive, del punctuations, compress all tokens, random select, top3):
-    # vqa, avg_acc: 78.474, avg_ratio: 0.8463602012285658, accs: [81.38, 79.73, 78.41, 79.57, 79.35, 76.07, 78.16, 79.65, 75.98, 76.44]
-    # GQA, avg_acc: 0.6031, avg_ratio: None, accs: [0.599, 0.619, 0.603, 0.603, 0.577, 0.593, 0.606, 0.58, 0.603, 0.6, 0.631, 0.621, 0.598, 0.604, 0.601, 0.617, 0.595, 0.607, 0.605, 0.6]
-    # GQA, avg_acc: 0.607, avg_ratio: None, accs: [0.602, 0.611, 0.598, 0.603, 0.623, 0.604, 0.594, 0.613, 0.623, 0.599]``
-
 
     # get bbox
-    image_path = work_dir / "test_figs/square/2354453.jpg"
-    obj_bboxes = get_scene_info(image_path)
-    image_save_dir = work_dir / "figures"
-    obj_names = ["rock"]
-    draw_bbox(image_path, obj_bboxes, image_save_dir, obj_names=obj_names)
+    # image_path = work_dir / "test_figs/square/2354453.jpg"
+    # obj_bboxes = get_scene_info(image_path)
+    # image_save_dir = work_dir / "figures"
+    # obj_names = ["rock"]
+    # draw_bbox(image_path, obj_bboxes, image_save_dir, obj_names=obj_names)

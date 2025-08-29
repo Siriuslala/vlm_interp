@@ -27,6 +27,8 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score, adjusted_rand_score
 
+import os
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=Path(__file__).parent / '.env')
 root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
@@ -34,7 +36,7 @@ data_dir = Path(os.getenv('DATA_DIR'))
 work_dir = Path(os.getenv('WORK_DIR'))
 
 import sys
-sys.path.append(root_dir)
+sys.path.append(str(root_dir))
 
 from eval.data_utils import *
 from patch.monkey_patch import *
@@ -46,7 +48,6 @@ from tqdm import tqdm
 import glob
 import json
 import jsonlines
-import os
 import copy
 from collections import defaultdict
 import random
