@@ -8,7 +8,7 @@ eval/results/
 figures/
 test_figs/
 train_rope_scaling/data/
-train_embedding/data/
+train_unembedding/data/
 utils/GQA_data/
 
 eval_result.txt

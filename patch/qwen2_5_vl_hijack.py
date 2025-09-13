@@ -4889,7 +4889,7 @@ class Qwen2_5_VLModel_token_truncation_by_logit_lens_runlength_adaptive(Qwen2_5_
             
             # ori_len = len(image_ids)
             # truncation_left_ratio = new_len / ori_len
-            # save_dir = "/home/liyueyan/Interpretability/mm/eval/results/share/test_llm_image_token_truncation-method_5_1/qwen2_5_vl"
+            # save_dir = str(root_dir / "eval/results/share/test_llm_image_token_truncation-method_5_1/qwen2_5_vl")
             # os.makedirs(save_dir, exist_ok=True)
             # save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
             # with jsonlines.open(save_path, "a") as f:

@@ -4,11 +4,20 @@ Process data.
 
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
+import sys
+sys.path.append(str(root_dir))
 
 from eval.data_utils import *
 
-import os
 import json
 import jsonlines
 import io
@@ -370,7 +379,7 @@ def process_vqa():
             f.write(info)
 
 def process_textvqa():
-    data_path = "/archive/private/liyueyan/TextVQA/data"
+    data_path = str(data_dir / "TextVQA/data")
     all_files = os.listdir(data_path)
     train_files = [file for file in all_files if "train" in file]
     val_files = [file for file in all_files if "val" in file and "parquet" in file]
@@ -432,11 +441,11 @@ def process_textvqa():
             f.write(sample)  
 
 def create_vision_decoder_val_dataset():
-    coco_path = "/archive/private/liyueyan/Hallucination/coco/train2014"
-    textvqa_path = "/archive/private/liyueyan/TextVQA/data/images"
+    coco_path = str(data_dir / "Hallucination/coco/train2014")
+    textvqa_path = str(data_dir / "TextVQA/data/images")
     val_dataset = []
     all_samples = []
-    val_dataset_path = "/home/liyueyan/Interpretability/mm/train_unembedding/data/val_dataset.jsonl"
+    val_dataset_path = root_dir / "train_unembedding/data/val_dataset.jsonl"
     for file in os.listdir(coco_path):
         if file.endswith(".jpg") or file.endswith(".png"):
             all_samples.append({
@@ -458,9 +467,9 @@ def create_vision_decoder_val_dataset():
             writer.write(item)
 
 def process_sqa():
-    data_path = "/archive/private/liyueyan/SQA/data"
-    val_file_path = "/archive/private/liyueyan/SQA/data/validation-00000-of-00001-6c7328ff6c84284c.parquet"
-    test_file_path = "/archive/private/liyueyan/SQA/data/test-00000-of-00001-f0e719df791966ff.parquet"
+    data_path = str(data_dir / "SQA/data")
+    val_file_path = str(data_dir / "SQA/data/validation-00000-of-00001-6c7328ff6c84284c.parquet")
+    test_file_path = str(data_dir / "SQA/data/test-00000-of-00001-f0e719df791966ff.parquet")
     
     # df = pd.read_parquet(test_file_path)
     # print("df", df.shape)
@@ -521,7 +530,7 @@ def process_sqa():
             f.write(sample)
 
 def process_mmbench():
-    data_path = "/archive/private/liyueyan/MMBench/en"
+    data_path = str(data_dir / "MMBench/en")
     dev_file_path = os.path.join(data_path, "dev-00000-of-00001.parquet")
     df = pd.read_parquet(dev_file_path)
     print("df", df.shape)  # (1000, 6)
