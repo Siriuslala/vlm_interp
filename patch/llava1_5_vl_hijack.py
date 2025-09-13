@@ -69,8 +69,8 @@ from transformers.models.llava.processing_llava import LlavaProcessorKwargs
 from pathlib import Path
 import sys
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=Path(__file__).parent / '.env')
-root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent))
 data_dir = Path(os.getenv('DATA_DIR'))
 work_dir = Path(os.getenv('WORK_DIR'))
 sys.path.append(str(root_dir))
@@ -2555,7 +2555,7 @@ class LlamaModel_token_truncation_by_logit_lens(LlamaPreTrainedModel):
         
         self.lm_head = None
         self.config._attn_implementation = "eager"
-        self.processor = AutoProcessor.from_pretrained("/raid_sdd/lyy/hf/models--LLaVA-1.5-7B", padding_side='left', use_fast=True)
+        self.processor = AutoProcessor.from_pretrained("llava-hf/llava-1.5-7b-hf", padding_side='left', use_fast=True)
 
         # Initialize weights and apply final processing
         self.post_init()
@@ -2715,7 +2715,7 @@ class LlamaModel_token_truncation_by_logit_lens(LlamaPreTrainedModel):
                 # print(f"causal_mask shape: {causal_mask.shape}")
                 
                 truncation_left_ratio = new_len / ori_len
-                save_path = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/GQA/results/test_llm_image_token_truncation/llava1_5_7b/truncation_ratio.jsonl"
+                save_path = str(root_dir / "eval/GQA/results/test_llm_image_token_truncation/llava1_5_7b/truncation_ratio.jsonl")
                 with jsonlines.open(save_path, "a") as f:
                     f.write({"truncation_left_ratio": truncation_left_ratio})
                 
@@ -3996,7 +3996,7 @@ class LlamaModel_token_truncation_by_logit_lens_runlength(LlamaPreTrainedModel):
                     new_len = len(compressed_tokens)
                     ori_len = len(image_ids)
                     truncation_left_ratio = new_len / ori_len
-                    save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_4/llava1_5_7b"
+                    save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_4/llava1_5_7b")
                     os.makedirs(save_dir, exist_ok=True)
                     save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
                     with jsonlines.open(save_path, "a") as f:
@@ -4604,7 +4604,7 @@ class LlamaModel_token_truncation_by_logit_lens_runlength_adaptive_reforward(Lla
             
             ori_len = len(image_ids)
             truncation_left_ratio = new_len / ori_len
-            # save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_5_3/llava1_5_7b"
+            # save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_5_3/llava1_5_7b")
             # os.makedirs(save_dir, exist_ok=True)
             # save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
             # with jsonlines.open(save_path, "a") as f:
@@ -5080,7 +5080,7 @@ class LlamaModel_token_truncation_by_logit_lens_runlength_adaptive_kvcache(Llama
 
             ori_len = len(image_ids)
             truncation_left_ratio = new_len / ori_len
-            # save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_5_3/llava1_5_7b"
+            # save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_5_3/llava1_5_7b")
             # os.makedirs(save_dir, exist_ok=True)
             # save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
             # with jsonlines.open(save_path, "a") as f:

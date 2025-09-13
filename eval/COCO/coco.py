@@ -1,11 +1,22 @@
 from torch.utils.data import Dataset
 import numpy as np
-import os
 import random
 import json
 import jsonlines
 from PIL import Image
 import torch
+
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent.parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
+import sys
+sys.path.append(str(root_dir))
+
 
 class COCODataset(Dataset):
     
@@ -142,8 +153,8 @@ class COCOCollator:
 if __name__ == "__main__":
     # Example usage
     data_path = [
-        "/raid_sdd/lyy/dataset/Hallucination/coco/annotations/captions_train2014.json",
-        "/raid_sdd/lyy/dataset/Hallucination/coco/train2014"
+        data_dir / "Hallucination/coco/annotations/captions_train2014.json",
+        data_dir / "Hallucination/coco/train2014"
     ]
     dataset = COCODataset(data_path, data_num=1000, random_select=True)
     collator = COCOCollator(processor=None, vision_process_func=None, model_name="llava")

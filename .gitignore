@@ -11,6 +11,8 @@ train_rope_scaling/data/
 train_unembedding/data/
 utils/GQA_data/
 
+test_interaction.py
+ignore.py
 eval_result.txt
 requirements_mm.txt
 README0.md

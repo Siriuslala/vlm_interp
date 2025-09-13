@@ -14,6 +14,18 @@ from .pattern_en import singularize
 lemma = nltk.wordnet.WordNetLemmatizer()
 
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent.parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent.parent.parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
+import sys
+sys.path.append(str(root_dir))
+
+
 def combine_coco_captions(annotation_path):
 
     if not os.path.exists('%s/captions_%s2014.json' %(annotation_path, 'val')):
@@ -302,8 +314,7 @@ def evaluate_chair(cap_file):
     '''
     Evaluate CHAIR metric on generated captions.
     '''
-    coco_path = "/raid_sdd/lyy/dataset/Hallucination/coco/annotations"
-    # cap_file = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/COCO/results/test_normal/normal-llava1_5_7b_0.jsonl"
+    coco_path = str(data_dir / "Hallucination/coco/annotations")
     
     _, imids, _ = load_generated_captions(cap_file)
     

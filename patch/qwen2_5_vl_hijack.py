@@ -48,8 +48,8 @@ if is_flash_attn_available():
 from pathlib import Path
 import sys
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=Path(__file__).parent / '.env')
-root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent))
 sys.path.append(str(root_dir))
 
 from model.unembedding import VisionTokenDecoder
@@ -5153,7 +5153,7 @@ class Qwen2_5_VLModel_token_truncation_by_logit_lens_runlength_adaptive_reforwar
         
         # self.lm_head = None
         # self.config._attn_implementation = "eager"
-        self.processor = AutoProcessor.from_pretrained("/raid_sdd/lyy/hf/Qwen/Qwen2.5-VL-7B-Instruct", padding_side='left', use_fast=True)
+        self.processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct", padding_side='left', use_fast=True)
         
         # Initialize weights and apply final processing
         self.post_init()
@@ -5381,7 +5381,7 @@ class Qwen2_5_VLModel_token_truncation_by_logit_lens_runlength_adaptive_reforwar
             
             ori_len = len(image_ids)
             truncation_left_ratio = new_len / ori_len
-            # save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_5_3/qwen2_5_vl"
+            # save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_5_3/qwen2_5_vl")
             # os.makedirs(save_dir, exist_ok=True)
             # save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
             # with jsonlines.open(save_path, "a") as f:
@@ -5903,7 +5903,7 @@ class Qwen2_5_VLModel_token_truncation_by_logit_lens_runlength_adaptive_kv_cache
             
             # ori_len = len(image_ids)
             # truncation_left_ratio = new_len / ori_len
-            # save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_5_3/qwen2_5_vl"
+            # save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_5_3/qwen2_5_vl")
             # os.makedirs(save_dir, exist_ok=True)
             # save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
             # with jsonlines.open(save_path, "a") as f:
@@ -6204,7 +6204,7 @@ class Qwen2VLModel_token_truncation_by_logit_lens_runlength_adaptive_reforward(Q
         self.norm = Qwen2RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
         self.rotary_emb = Qwen2VLRotaryEmbedding(config=config)
         
-        self.processor = AutoProcessor.from_pretrained("/raid_sdd/lyy/hf/Qwen/Qwen2-VL-7B-Instruct", padding_side='left', use_fast=True)
+        self.processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-7B-Instruct", padding_side='left', use_fast=True)
 
         self.gradient_checkpointing = False
         # Initialize weights and apply final processing
@@ -6410,7 +6410,7 @@ class Qwen2VLModel_token_truncation_by_logit_lens_runlength_adaptive_reforward(Q
             truncation_left_ratio = new_len / ori_len
             # print(truncation_left_ratio)
             # import pdb; pdb.set_trace()
-            save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_5/qwen2_vl_7b"
+            save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_5/qwen2_vl_7b")
             os.makedirs(save_dir, exist_ok=True)
             save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
             with jsonlines.open(save_path, "a") as f:
@@ -6912,7 +6912,7 @@ class Qwen2VLModel_token_truncation_by_logit_lens_runlength_adaptive(Qwen2VLPreT
             # truncation_left_ratio = new_len / ori_len
             # # print(truncation_left_ratio)
             # # import pdb; pdb.set_trace()
-            # save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_5/qwen2_vl_7b"
+            # save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_5/qwen2_vl_7b")
             # os.makedirs(save_dir, exist_ok=True)
             # save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
             # with jsonlines.open(save_path, "a") as f:

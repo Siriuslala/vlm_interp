@@ -123,7 +123,7 @@ def load_model(model_name, model_path, device):
             use_fast=True,
         )
     elif "ViT" in model_name:
-        model, processor = clip.load(model_name, device=device, download_root="/raid_sdd/lyy/hf/clip")
+        model, processor = clip.load(model_name, device=device)
         tokenizer = None
     elif "llava" in model_name:
         model_dir = MODEL_NAME_TO_PATH[model_name]

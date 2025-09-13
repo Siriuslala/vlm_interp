@@ -7,6 +7,17 @@ import os
 import random
 import json
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
+import sys
+sys.path.append(str(root_dir))
+
 
 class GQASquareImages():
     def __init__(self, image_dir, data_num=None, random_select=True) -> None:
@@ -14,8 +25,8 @@ class GQASquareImages():
         image_ids = []
         self.data = []
         
-        train_scene_path = "/raid_sdd/lyy/dataset/GQA/scene/train_sceneGraphs.json"
-        val_scene_path = "/raid_sdd/lyy/dataset/GQA/scene/val_sceneGraphs.json"
+        train_scene_path = data_dir / "GQA/scene/train_sceneGraphs.json"
+        val_scene_path = data_dir / "GQA/scene/val_sceneGraphs.json"
         train_scene_data = json.load(open(train_scene_path, "r"))
         val_scene_data = json.load(open(val_scene_path, "r"))
         

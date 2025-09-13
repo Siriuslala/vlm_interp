@@ -63,6 +63,7 @@ import shutil
 import string
 import re
 
+FONT_PATH = root_dir / "font/SimHei.ttf"
 
 MODEL_NAME_TO_PATH = {
     "qwen2_5_vl": "Qwen/Qwen2.5-VL-7B-Instruct",
@@ -213,7 +214,7 @@ def load_model(model_name, device, use_flash_attention=True):
             use_fast=use_flash_attention,
         )
     elif "ViT" in model_name:
-        model, processor = clip.load(model_name, device=device, download_root="/raid_sdd/lyy/hf/clip")
+        model, processor = clip.load(model_name, device=device)
         tokenizer = None
     elif "llava" in model_name:
         model_dir = MODEL_NAME_TO_PATH[model_name]
@@ -1122,9 +1123,8 @@ def seg_with_unembedding_tokens_qwen_old(
             seg_map = Image.new("RGB", (table_width, table_height), "white")
             draw = ImageDraw.Draw(seg_map)
 
-            font_path = "/raid_sdd/lyy/font/SimHei.ttf"
             try:
-                font = ImageFont.truetype(font_path, size=15)
+                font = ImageFont.truetype(FONT_PATH, size=15)
             except IOError:
                 font = None
 
@@ -1321,9 +1321,8 @@ def select_unembedding_layer(
                 for y in range(0, svg_height + 1, cell_size):
                     dwg.add(dwg.line(start=(0, y), end=(svg_width, y), stroke="black", stroke_width=1))
                 
-                font_path = "/raid_sdd/lyy/font/SimHei.ttf"
                 try:
-                    font = ImageFont.truetype(font_path, size=15)
+                    font = ImageFont.truetype(FONT_PATH, size=15)
                 except IOError:
                     font = None
                     
@@ -1627,9 +1626,8 @@ def seg_with_unembedding_tokens_qwen(
         seg_map = Image.new("RGB", (table_width, table_height), "white")
         draw = ImageDraw.Draw(seg_map)
 
-        font_path = "/raid_sdd/lyy/font/SimHei.ttf"
         try:
-            font = ImageFont.truetype(font_path, size=15)
+            font = ImageFont.truetype(FONT_PATH, size=15)
         except IOError:
             font = None
 
@@ -1754,9 +1752,8 @@ def seg_with_unembedding_tokens_qwen(
         seg_map = Image.new("RGB", (table_width, table_height), "white")
         draw = ImageDraw.Draw(seg_map)
 
-        font_path = "/raid_sdd/lyy/font/SimHei.ttf"
         try:
-            font = ImageFont.truetype(font_path, size=15)
+            font = ImageFont.truetype(FONT_PATH, size=15)
         except IOError:
             font = None
 
@@ -1975,9 +1972,8 @@ def seg_with_unembedding_tokens(
             seg_map = Image.new("RGB", (table_width, table_height), "white")
             draw = ImageDraw.Draw(seg_map)
 
-            font_path = "/raid_sdd/lyy/font/SimHei.ttf"
             try:
-                font = ImageFont.truetype(font_path, size=15)
+                font = ImageFont.truetype(FONT_PATH, size=15)
             except IOError:
                 font = None
 
@@ -2154,9 +2150,8 @@ def seg_with_unembedding_tokens(
             seg_map = Image.new("RGB", (table_width, table_height), "white")
             draw = ImageDraw.Draw(seg_map)
 
-            font_path = "/raid_sdd/lyy/font/SimHei.ttf"
             try:
-                font = ImageFont.truetype(font_path, size=15)
+                font = ImageFont.truetype(FONT_PATH, size=15)
             except IOError:
                 font = None
 
@@ -2405,9 +2400,8 @@ def seg_with_unembedding_tokens_svg(
             for y in range(0, svg_height + 1, cell_size):
                 dwg.add(dwg.line(start=(0, y), end=(svg_width, y), stroke="black", stroke_width=1))
             
-            font_path = "/raid_sdd/lyy/font/SimHei.ttf"
             try:
-                font = ImageFont.truetype(font_path, size=15)
+                font = ImageFont.truetype(FONT_PATH, size=15)
             except IOError:
                 font = None
                 
@@ -2600,9 +2594,8 @@ def seg_with_unembedding_tokens_svg(
             for y in range(0, svg_height + 1, cell_size):
                 dwg.add(dwg.line(start=(0, y), end=(svg_width, y), stroke="black", stroke_width=1))
 
-            font_path = "/raid_sdd/lyy/font/SimHei.ttf"
             try:
-                font = ImageFont.truetype(font_path, size=15)
+                font = ImageFont.truetype(FONT_PATH, size=15)
             except IOError:
                 font = None
 
@@ -4252,9 +4245,9 @@ def check_vit_hallucination(
                         for y in range(0, svg_height + 1, cell_size):
                             dwg.add(dwg.line(start=(0, y), end=(svg_width, y), stroke="black", stroke_width=1))
                         
-                        font_path = "/raid_sdd/lyy/font/SimHei.ttf"
+                        
                         try:
-                            font = ImageFont.truetype(font_path, size=15)
+                            font = ImageFont.truetype(FONT_PATH, size=15)
                         except IOError:
                             font = None
                             

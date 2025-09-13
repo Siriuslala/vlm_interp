@@ -8,8 +8,8 @@ import sys
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=Path(__file__).parent / '.env')
-root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent))
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent))
 data_dir = Path(os.getenv('DATA_DIR'))
 work_dir = Path(os.getenv('WORK_DIR'))
 
@@ -63,8 +63,8 @@ spatial_words_dict = {
 
 def process_gqa():
     data_path = [
-        "/raid_sdd/lyy/dataset/GQA/questions/testdev_balanced_questions.json",
-        "/raid_sdd/lyy/dataset/GQA/images/images"
+        data_dir / "GQA/questions/testdev_balanced_questions.json",
+        data_dir / "GQA/images/images"
     ]
     text_path, image_path = data_path
     all_data = json.load(open(text_path, "r"))
@@ -89,7 +89,7 @@ def process_gqa():
             gqa_spatial.append({"id": qn_id, "question": question, "image": image, "answer": answer})
     
     print("gqa_no_spatial", len(gqa_no_spatial))
-    data_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/utils/GQA_data"
+    data_dir = root_dir / "utils/GQA_data"
     spatial_path = os.path.join(data_dir, "gqa_spatial.jsonl")
     no_spatial_path = os.path.join(data_dir, "gqa_no_spatial.jsonl")
     with jsonlines.open(spatial_path, mode='w') as writer:
@@ -101,8 +101,8 @@ def process_gqa():
 
 def process_gqa_for_sft(data_num=20000):
     data_path = [
-        "/raid_sdd/lyy/dataset/GQA/questions/train_balanced_questions.json",
-        "/raid_sdd/lyy/dataset/GQA/images/images"
+        data_dir / "GQA/questions/train_balanced_questions.json",
+        data_dir / "GQA/images/images"
     ]
     text_path, image_path = data_path
     all_data = json.load(open(text_path, "r"))
@@ -132,7 +132,7 @@ def process_gqa_for_sft(data_num=20000):
         gqa_spatial = gqa_spatial[:data_num]
     
     print("gqa_no_spatial", len(gqa_no_spatial))
-    data_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/train/data"
+    data_dir = root_dir / "train/data"
     spatial_path = os.path.join(data_dir, "gqa_spatial.jsonl")
     no_spatial_path = os.path.join(data_dir, "gqa_no_spatial.jsonl")
     if data_num is not None:
@@ -145,7 +145,7 @@ def process_gqa_for_sft(data_num=20000):
             writer.write(item)
             
 def process_spare():
-    spare_data_path = "/raid_sdd/lyy/Interpretability/lyy/mm/train/data/spare_300k.jsonl"
+    spare_data_path = root_dir / "train/data/spare_300k.jsonl"
     with jsonlines.open(spare_data_path, 'r') as f:
         for line in f:            
             image_name = line["image_file"].split('/')[-1]
@@ -157,19 +157,19 @@ def process_spare():
             # break
     
 def get_gqa_bbox():
-    image_path = "/raid_sdd/lyy/dataset/GQA/images"
+    image_path = data_dir / "GQA/images"
     files = os.listdir(image_path)
     hd5_files = [file for file in files if file.endswith(".h5")]
     print("hd5_files", len(hd5_files))
     
-    link_path = "/raid_sdd/lyy/dataset/GQA/gqa_objects_info.json"
+    link_path = data_dir / "GQA/gqa_objects_info.json"
     with open(link_path, "r") as f:
         data = json.load(f)
     print("data", type(data))
     
     import h5py
     # https://docs.h5py.org/en/stable/quick.html
-    path = "/raid_sdd/lyy/dataset/GQA/objects/gqa_objects_7.h5"
+    path = data_dir / "GQA/objects/gqa_objects_7.h5"
     with h5py.File(path, 'r') as f:
         print(list(f.keys()))
         bbox_file = f["bboxes"]
@@ -178,8 +178,8 @@ def get_gqa_bbox():
         print("data.shape", data.shape)  # (ImagesNum, 100, 4)
 
 def get_square_images():
-    image_path = "/raid_sdd/lyy/dataset/GQA/images/images"
-    tgt_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/gqa"
+    image_path = data_dir / "GQA/images/images"
+    tgt_dir = root_dir / "test_figs/gqa"
     files = os.listdir(image_path)
     square_images = []
     for file in files:
@@ -194,8 +194,8 @@ def get_square_images():
     print("square_images", len(square_images))
 
 def get_scene_info():
-    train_scene_path = "/raid_sdd/lyy/dataset/GQA/scene/train_sceneGraphs.json"
-    val_scene_path = "/raid_sdd/lyy/dataset/GQA/scene/val_sceneGraphs.json"
+    train_scene_path = data_dir / "GQA/scene/train_sceneGraphs.json"
+    val_scene_path = data_dir / "GQA/scene/val_sceneGraphs.json"
     train_scene_data = json.load(open(train_scene_path, "r"))
     val_scene_data = json.load(open(val_scene_path, "r"))
     key = "2333052"  # 2354453 2332870
@@ -206,7 +206,7 @@ def get_scene_info():
     pass
 
 def process_whatsup(dataset_name):
-    root_dir="/raid_sdd/lyy/dataset/whatsup_vlms/data/whatsup_vlms_data"
+    root_dir=data_dir / "whatsup_vlms/data/whatsup_vlms_data"
     dataset1 = Controlled_Images(image_preprocess=None, subset="B", root_dir=root_dir, directions=[])
     for i in range(len(dataset1)):
         if "on " in dataset1[i]["caption_options"][0]:
@@ -261,9 +261,9 @@ def draw_bbox(
 def process_pope():
     
     data_type = "adversarial"  # random, popular, adversarial
-    data_path = f"/raid_sdd/lyy/dataset/POPE/Full/{data_type}-00000-of-00001.parquet"
-    save_path = f"/raid_sdd/lyy/dataset/POPE/{data_type}.jsonl"
-    image_dir = os.path.join("/raid_sdd/lyy/dataset/POPE/images", data_type)
+    data_path = data_dir / f"POPE/Full/{data_type}-00000-of-00001.parquet"
+    save_path = data_dir / f"POPE/{data_type}.jsonl"
+    image_dir = os.path.join(data_dir / "POPE/images", data_type)
     os.makedirs(image_dir, exist_ok=True)
     
     df = pd.read_parquet(data_path)
@@ -277,7 +277,7 @@ def process_pope():
     # print("sample", sample)
 
     # image = Image.open(io.BytesIO(sample['image']["bytes"]))
-    # image.save("/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/pope/0.png")
+    # image.save(root_dir / "test_figs/pope/0.png")
 
     data_num = len(df)
     with jsonlines.open(save_path, 'w') as f:
@@ -303,7 +303,7 @@ def process_pope():
             f.write(info)
 
 def process_mme():
-    image_data_dir = "/raid_sdd/lyy/dataset/MME/data"
+    image_data_dir = data_dir / "MME/data"
     image_path_0 = os.path.join(image_data_dir, "test-00000-of-00002.parquet")
     image_path_1 = os.path.join(image_data_dir, "test-00001-of-00002.parquet")
     df_0 = pd.read_parquet(image_path_0)
@@ -315,7 +315,7 @@ def process_mme():
     # print(df.iloc[0]["image"]["path"])
     
     data_num = len(df)
-    new_data_dir = "/raid_sdd/lyy/dataset/MME/MME_data"
+    new_data_dir = data_dir / "MME/MME_data"
     for idx in tqdm(range(data_num)):
         sample = df.iloc[idx]
         category = sample['category']
@@ -340,8 +340,8 @@ def process_mme():
             f.write(info)
     
 def process_vqa():
-    qn_path = "/raid_sdd/lyy/dataset/VQA_v2/v2_OpenEnded_mscoco_val2014_questions.json"
-    annotation_path = "/raid_sdd/lyy/dataset/VQA_v2/v2_mscoco_val2014_annotations.json"
+    qn_path = data_dir / "VQA_v2/v2_OpenEnded_mscoco_val2014_questions.json"
+    annotation_path = data_dir / "VQA_v2/v2_mscoco_val2014_annotations.json"
     
     # open question file
     with open(qn_path, 'r') as f:
@@ -359,7 +359,7 @@ def process_vqa():
     # print("annotation_data.keys()", annotation_data.keys())  # ['info', 'task_type', 'data_type', 'license', 'data_subtype', 'annotations']
     print("annotations[0]", annotations[0])  # {'question_id': 500000, 'image_id': 300000, 'answers': [{'answer': 'red', 'answer_confidence':
     
-    res_path = "/raid_sdd/lyy/dataset/VQA_v2/val.jsonl"
+    res_path = data_dir / "VQA_v2/val.jsonl"
     with jsonlines.open(res_path, 'w') as f:
         for idx in tqdm(range(len(questions))):
             question = questions[idx]
@@ -570,7 +570,7 @@ if __name__ == "__main__":
     # process_gqa_for_sft(data_num=60000)
     # process_spare()
     
-    # f = jsonlines.open("/raid_sdd/lyy/Interpretability/lyy/mm/utils/GQA_data/gqa_spatial.jsonl", mode='r')
+    # f = jsonlines.open(root_dir / "utils/GQA_data/gqa_spatial.jsonl", mode='r')
     # data = [line for line in f]
     # print(data[0])
     
@@ -581,9 +581,9 @@ if __name__ == "__main__":
     # process_whatsup("whatsup_a")
     # get_scene_info()
     
-    # get_bbox_from_xml("/raid_sdd/lyy/Interpretability/lyy/mm/eval/WhatsUp/bboxes/test_label/1.xml")
+    # get_bbox_from_xml(root_dir / "eval/WhatsUp/bboxes/test_label/1.xml")
     def get_bboxes_from_xmls():
-        xml_path = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/WhatsUp/bboxes/label"
+        xml_path = root_dir / "eval/WhatsUp/bboxes/label"
         xml_paths = os.listdir(xml_path)
         res = []
         for xml_file in xml_paths:
@@ -594,7 +594,7 @@ if __name__ == "__main__":
                 "bbox": bbox_dict
             }
             res.append(data)
-        save_path = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/WhatsUp/bboxes/bbox.jsonl"
+        save_path = root_dir / "eval/WhatsUp/bboxes/bbox.jsonl"
         with jsonlines.open(save_path, mode='w') as writer:
             for item in res:
                 writer.write(item)
@@ -602,17 +602,17 @@ if __name__ == "__main__":
     # get_bboxes_from_xmls()
     
     # image_id = "book_behind_can"
-    # bbox_path = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/WhatsUp/bboxes/bbox.jsonl"
+    # bbox_path = root_dir / "eval/WhatsUp/bboxes/bbox.jsonl"
     # with jsonlines.open(bbox_path, mode='r') as f:
     #     data = [line for line in f]
     # bbox = [item for item in data if item["image"] == image_id][0]["bbox"]
     # draw_bbox(
-    #     image_path=f"/raid_sdd/lyy/dataset/whatsup_vlms/data/whatsup_vlms_data/controlled_clevr/{image_id}.jpeg",
+    #     image_path=fdata_dir / "whatsup_vlms/data/whatsup_vlms_data/controlled_clevr/{image_id}.jpeg",
     #     bboxes=bbox,
-    #     save_dir="/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/gqa"
+    #     save_dir=root_dir / "test_figs/gqa"
     # )
     
-    # annotation_dir = "/raid_sdd/lyy/dataset/whatsup_vlms/data/whatsup_vlms_data"
+    # annotation_dir = data_dir / "whatsup_vlms/data/whatsup_vlms_data"
     # annotation_path = os.path.join(annotation_dir, "controlled_clevr_dataset.json")
     # annotations = json.load(open(annotation_path))
     # print(annotations[0])

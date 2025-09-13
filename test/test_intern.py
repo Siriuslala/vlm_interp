@@ -5,12 +5,22 @@ from transformers import AutoProcessor, AutoModel, AutoTokenizer, LlavaForCondit
 from torchvision.transforms.functional import InterpolationMode
 import torchvision.transforms as T
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
+import sys
+sys.path.append(str(root_dir))
+
 
 device = "cuda:0"
 
-model_dir = "/raid_sdd/lyy/hf/models--InternVL2_5-8B"
+model_dir = "models--InternVL2_5-8B"
 model_dir = "OpenGVLab/InternVL2_5-8B"
-# model_dir = "/raid_sdd/lyy/hf/huggingface/hub/models--OpenGVLab--InternVL2_5-8B/snapshots/e9e4c0dc1db56bfab10458671519b7fa3dd29463"
 model = AutoModel.from_pretrained(
     model_dir,
     torch_dtype=torch.bfloat16,
@@ -111,8 +121,8 @@ def load_image_intern(image_file, input_size=448, max_num=12):
 # Define a chat history and use `apply_chat_template` to get correctly formatted prompt
 # Each value in "content" has to be a list of dicts with types ("text", "image")
 
-image_file_0 = "/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/test_dinasour.png"
-image_file_1 = "/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/test_code.jpg"
+image_file_0 = root_dir / "test_figs/test_dinasour.png"
+image_file_1 = root_dir / "test_figs/test_code.jpg"
 
 
 # text = """

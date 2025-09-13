@@ -35,6 +35,17 @@ except:
     print('FlashAttention2 is not installed.')
     has_flash_attn = False
 
+
+from pathlib import Path
+import sys
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+sys.path.append(str(root_dir))
+
+
 def _import_flash_attn():
     global flash_attn_func, flash_attn_varlen_func
     global pad_input, index_first_axis, unpad_input
@@ -998,7 +1009,7 @@ def InternLM2Model_forward_token_truncation(
         truncation_left_ratio = new_len / ori_len
         # print(truncation_left_ratio)
         # import pdb; pdb.set_trace()
-        save_dir = "/raid_sdd/lyy/Interpretability/lyy/mm/eval/share/test_llm_image_token_truncation-method_5/internvl2_5_8b"
+        save_dir = str(root_dir / "eval/share/test_llm_image_token_truncation-method_5/internvl2_5_8b")
         os.makedirs(save_dir, exist_ok=True)
         save_path = os.path.join(save_dir, "truncation_ratio.jsonl")
         with jsonlines.open(save_path, "a") as f:

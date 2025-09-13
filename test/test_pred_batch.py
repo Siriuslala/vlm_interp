@@ -7,9 +7,20 @@ from patch.monkey_patch import *
 
 from typing import List, Dict, Union
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+root_dir = Path(os.getenv('ROOT_DIR', Path(__file__).parent.parent))
+data_dir = Path(os.getenv('DATA_DIR'))
+work_dir = Path(os.getenv('WORK_DIR'))
+
+import sys
+sys.path.append(str(root_dir))
+
 
 def load_model(device):
-    model_dir="/raid_sdd/lyy/hf/Qwen/Qwen2.5-VL-7B-Instruct"
+    model_dir="Qwen/Qwen2.5-VL-7B-Instruct"
 
     # default: Load the model on the available device(s)
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
@@ -160,8 +171,8 @@ if __name__ == "__main__":
     device = "cuda:3"
     model, processor = load_model(device)
     test_data = [
-        ("/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/test_code.jpg", "describe the image and tell me what is the main object in the image"),
-        ("/raid_sdd/lyy/Interpretability/lyy/mm/test_figs/test_dinasour.png", "describe the image and tell me what is the main object in the image"),
+        (root_dir / "test_figs/test_code.jpg", "describe the image and tell me what is the main object in the image"),
+        (root_dir / "test_figs/test_dinasour.png", "describe the image and tell me what is the main object in the image"),
     ]
     image_paths = [x[0] for x in test_data]
     prompts = [x[1] for x in test_data]
