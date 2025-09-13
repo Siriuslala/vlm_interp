@@ -5373,7 +5373,7 @@ class LlamaModel_token_truncation_by_logit_lens_runlength_adaptive(LlamaPreTrain
             _, text_token_ids_top_3 = torch.topk(logits, k=3, dim=-1)  # (seq_len, top_k)
             image_text_tokens = [self.processor.tokenizer.decode(text_id[0]) for text_id in text_token_ids_top_3]
             image_text_tokens_second = [self.processor.tokenizer.decode(text_id[1]) for text_id in text_token_ids_top_3]
-            image_text_tokens_third = [self.processor.tokenizer.decode(text_id[2]) for text_id in text_token_ids_top_3]
+            # image_text_tokens_third = [self.processor.tokenizer.decode(text_id[2]) for text_id in text_token_ids_top_3]
             # image_text_tokens_top3 = [(text_token, text_token_second, text_token_third) for text_token, text_token_second, text_token_third in zip(image_text_tokens, image_text_tokens_second, image_text_tokens_third)]
             image_text_tokens_top3 = [(text_token, text_token_second) for text_token, text_token_second in zip(image_text_tokens, image_text_tokens_second)]
 

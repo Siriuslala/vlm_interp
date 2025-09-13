@@ -1317,16 +1317,16 @@ if __name__ == "__main__":
     # print(f"eval_vqa: {eval_vqa}")
     # pass
 
-    # work_dir / "checkpoints/normal/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32/checkpoint-1875
-    # work_dir / "checkpoints/rope_scaling/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32-scaling_type_poly-poly_alpha_49-poly_p_8/checkpoint-1875
-    model_name = "qwen2_5_vl"  # qwen2_5_vl, llava1_5_7b, internvl2_5_8b
+    ckpt_path = str(work_dir / "checkpoints_rope_scaling/normal/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32/checkpoint-1875")
+    # ckpt_path = str(work_dir / "checkpoints_rope_scaling/rope_scaling/lora-qwen2_vl_7b-data_gqa_spatial_60000-bsz_32-lr_3e-6-rank_16-alpha_32-scaling_type_poly-poly_alpha_49-poly_p_8/checkpoint-1875")
+    model_name = "qwen2_vl_7b"  # qwen2_5_vl, llava1_5_7b, internvl2_5_8b
     accs = []
-    for i in range(10):
+    for i in range(1):
         acc = test_normal(
             model_name=model_name,  # qwen2_5_vl qwen2_5_vl_3b qwen2_5_vl_3b qwen2_vl_2b, llava1_5_7b, internvl2_5_8b
-            model_path=None,  # ckpt path
-            dataset_name="vqa",  # "GQA", "whatsup_b", "gqa_no_spatial", "whatsup_b_left_right", "whatsup_b_behind_in_front_of"
-            device="cuda:2",
+            model_path=None,  # None or ckpt path
+            dataset_name="mmb",  # "GQA", "whatsup_b", "gqa_no_spatial", "whatsup_b_left_right", "whatsup_b_behind_in_front_of"
+            device="cuda:7",
             tag=str(i),
             data_num=1000,
             batch_size=8,
@@ -1340,98 +1340,6 @@ if __name__ == "__main__":
         avg_acc = 0.0
     print(f"accs ({model_name}): avg_acc: {avg_acc}, {accs}")
     
-    # qwen2-vl-2b
-    # Whatsup_A: (0.7563)
-    # Whatsup_B: 0.5269607843137255, 0.5049019607843137, 0.5122549019607843, 0.5367647058823529, 0.5490196078431373, 0.5, 0.5441176470588235, 0.5563725490196079, 0.5196078431372549, 0.571078431372549
-    # GQA: avg_acc: 0.598, [0.613, 0.587, 0.59, 0.594, 0.606]  (0.603) 0.605, 0.586, 0.582, 0.631, 0.61, 0.604, 0.606, 0.586, 0.616, 0.602
-    # gqa_spatial: (0.621) 0.622, 0.618, 0.607, 0.625, 0.633
-    # gqa_no_spatial: (0.583) 0.579, 0.57, 0.608, 0.587, 0.572
-    # cocoqa_1:
-    # cocoqa_2: 58.18
-    
-    # qwen2-vl-7b
-    # vsr: 77.77
-    # Whatsup_A: (0.9806)
-    # Whatsup_B: (0.8809) 0.8799019607843137, 0.9068627450980392, 0.8529411764705882, 0.8651960784313726, 0.8725490196078431, 0.9142156862745098, 0.8848039215686274, 0.8823529411764706, 0.8676470588235294, 0.8823529411764706
-    # GQA: (0.612) 0.603, 0.61, 0.624, 0.62, 0.619, 0.616, 0.614, 0.591, 0.617, 0.607
-    # gqa_spatial: (0.643) 0.661, 0.624, 0.646, 0.638, 0.648
-    # gqa_no_spatial: (0.610) 0.591, 0.605, 0.609, 0.632, 0.611
-    
-    # qwen2.5-vl-7b
-    # VQA: avg_acc: 79.602, [79.29, 79.73, 80.8, 79.23, 77.74, 79.06, 80.07, 81.67, 79.71, 78.72]
-    # GQA: (0.612) random: 0.628, 0.597, 0.599, 0.597, 0.578, 0.628, 0.627, 0.601, 0.617, 0.616, 0.616, 0.607, 0.597, 0.607, 0.617, 0.605, 0.599, 0.601, 0.612, 0.614, 0.611, 0.612
-    # Whatsup_B: 95.10, 94.85, 94.36, 95.10
-    # gqa_spatial: (0.638) 0.634, 0.661, 0.632, 0.634, 0.628
-    # gqa_no_spatial: (0.581) 0.568, 0.581,  0.572, 0.571, 0.616, 0.581, 0.579
-    # pope random: 0.8922974324774925, precision: 0.9070205676998971, recall: 0.892265732710696, f1: 0.8913089409411027
-    # pope popular: 0.8806666666666667, precision: 0.8915428571428572, recall: 0.8806666666666667, f1: 0.8798321
-    # pope adversarial: 0.8693333333333333, precision: 0.8767169862641099, recall: 0.8693333333333333, f1: 0.8686899139114996
-    # mme
-    # total score: 1714.1681672669067 
-    #         existence  score: 200.0
-    #         count  score: 150.0
-    #         position  score: 165.0
-    #         color  score: 195.0
-    #         posters  score: 174.82993197278913
-    #         celebrity  score: 155.58823529411765
-    #         scene  score: 154.5
-    #         landmark  score: 185.5
-    #         artwork  score: 148.75
-    #         OCR  score: 185.0
-    # total score: 607.1428571428571 
-    #         commonsense_reasoning  score: 142.14285714285717
-    #         numerical_calculation  score: 125.0
-    #         text_translation  score: 185.0
-    #         code_reasoning  score: 155.0
-    
-    
-    # qwen2_5_vl_3b
-    # Whatsup_B: 86.76, 87.01, 86.27, 85.54, 86.76
-    # GQA: (0.596) 0.595, 0.593, 0.581, 0.603, 0.619, 0.585, 0.611, 0.602, 0.569, 0.602
-    # gqa_spatial: (0.635) 0.639, 0.656, 0.626, 0.635, 0.619
-    # gqa_no_spatial: (0.580) 0.59, 0.562, 0.581, 0.562, 0.603
-    
-    # llava1_5_7b
-    # VQA: avg_acc: 48.927, [48.71, 49.41, 51.11, 50.04, 44.89, 49.66, 50.45, 47.83, 49.08, 48.09]
-    # GQA: (0.6064) 0.592, 0.581, 0.593, 0.632, 0.61, 0.613, 0.602, 0.622, 0.62, 0.601, 0.582, 0.619, 0.616
-    # GQA1: (0.602) 0.598, 0.621, 0.595, 0.614, 0.598, 0.591, 0.593, 0.606, 0.605, 0.596
-    # GQA2: (0.610) 0.638, 0.639, 0.602, 0.6, 0.589, 0.62, 0.579, 0.607, 0.627, 0.596
-    # GQA3: (0.608) 0.629, 0.594, 0.612, 0.62, 0.595, 0.628, 0.6, 0.602, 0.609, 0.588
-    # GQA4: (0.603) 0.606, 0.617, 0.602, 0.602, 0.617, 0.619, 0.599, 0.555, 0.608, 0.609
-    # GQA5: (0.608) 0.612, 0.619, 0.606, 0.606, 0.601, 0.596, 0.611, 0.606, 0.603, 0.621
-    # pope_random: acc: 0.859619873291097, precision: 0.8847428986384496, recall: 0.8595772737380476, f1: 0.8572799889674443
-    # pope_popular: 0.8510
-    # pope_adversarial: 0.8326
-    # coco500(randn14): {'CHAIRs': 0.488, 'CHAIRi': 0.14197357323587292}  {'CHAIRs': 0.49, 'CHAIRi': 0.14418735891647855}
-    # coco1000(randn104): {'CHAIRs': 0.504, 'CHAIRi': 0.14084507042253522}
-    # mme
-    # =========== Perception ===========                                                                                            17:11:13 [0/1916]
-    # total score: 1470.6019407763106                                                                                                      
-    #         existence  score: 190.0                                       
-    #         count  score: 148.33333333333331                              
-    #         position  score: 133.33333333333334                           
-    #         color  score: 148.33333333333331                              
-    #         posters  score: 144.55782312925172                            
-    #         celebrity  score: 130.2941176470588                           
-    #         scene  score: 155.0                                                                                                                   
-    #         landmark  score: 160.5                                                                                                                
-    #         artwork  score: 120.25                                                                                                                
-    #         OCR  score: 140.0                                                                                                                                                                                                                                          
-    # =========== Cognition ===========                                                                                                              
-    # total score: 296.7857142857143                                                                                                                 
-                                                                                                                                                
-    #         commonsense_reasoning  score: 119.28571428571428                                                                                      
-    #         numerical_calculation  score: 45.0                                                                                                    
-    #         text_translation  score: 55.0                                                                                                         
-    #         code_reasoning  score: 77.5
-    
-    # Whatsup_B: 0.262, 0.282, 0.272, 0.270
-    # gqa_spatial: (0.623) 0.643, 0.612, 0.604, 0.62, 0.635
-    # gqa_no_spatial: (0.594) 0.603, 0.567, 0.625, 0.57, 0.605
-    
-    # internvl2_5_8b
-    # GQA: (0.646) 0.666, 0.613, 0.656, 0.641, 0.643, 0.645, 0.643, 0.646, 0.635, 0.645
-    # Whatsup_B: 0.978, 0.978, 0.980, 0.956
     
     # ------------------------------------- delete_pos_embed
     # accs = []
@@ -1473,36 +1381,6 @@ if __name__ == "__main__":
     #     accs.append(acc)
     # print(f"accs: {accs}")
     
-    # delete pos embed in vit:
-    # GQA
-    # qwen2_5_7b: (0.4294) 0.414, 0.443, 0.409, 0.423, 0.471, 0.406, 0.438, 0.419, 0.445, 0.426
-    # qwen2_5_3b: (0.4247) 0.431, 0.417, 0.431, 0.428, 0.423, 0.429, 0.407, 0.423, 0.421, 0.437
-    # qwen2_2b: (0.3524) 0.352, 0.342, 0.329, 0.376, 0.359, 0.35, 0.354, 0.33, 0.366, 0.366
-    # qwen2_7b: (0.4008) 0.404, 0.374, 0.395, 0.384, 0.405, 0.414, 0.421, 0.434, 0.399, 0.378
-    # llava1_5_7b: (0.422) 0.433, 0.425, 0.427, 0.406, 0.422, 0.402, 0.423, 0.437
-    # internvl2_5_8b: (0.463) 0.45, 0.473, 0.463, 0.482, 0.445
-    # Whatsup_B
-    # qwen2_5_7b: (0.2633) 0.2623, 0.2672, 0.2696, 0.2672, 0.2500
-    # qwen2_5_3b: (0.2407) 0.2745, 0.2230, 0.2696, 0.2132, 0.2230
-    # qwen2_2b: (0.2824) 0.3015, 0.2672, 0.2917, 0.2745, 0.2770
-    # qwen2_7b: (0.2686) 0.2721, 0.2574, 0.2647, 0.2696, 0.2794
-    # llava1.5_7b: (0.2461) 0.2574, 0.2426, 0.2132, 0.2770, 0.2402
-    # internvl: (0.2583) 0.2402, 0.2598, 0.2451, 0.2623, 0.2843
-    # GQA no spatial
-    # qwen2_5_7b: 0.430
-    # qwen2_5_3b: 0.429
-    # qwen2_2b: 0.345
-    # qwen2_7b: 0.387
-    # llava1_5_7b: (0.429) 0.42, 0.45, 0.405, 0.451, 0.417
-    # GQA spatial
-    # qwen2_5_7b: 0.436
-    # qwen2_5_3b: 0.426
-    # qwen2_2b: 0.339
-    # qwen2_7b: 0.402
-    # llava1_5_7b: (0.401) 0.383, 0.4, 0.431, 0.405, 0.388
-    
-    # delete pos embed in llm(all):
-    # llava1_5_7b: /
 
     # ------------------------------------- add_pos_embed
     # accs = []
@@ -1517,11 +1395,7 @@ if __name__ == "__main__":
     #     )
     #     accs.append(acc)
     # print(f"accs: {accs}")
-    
-    # add pos embed in vit:
-    # llava1_5_7b: 
-    # GQA: 0.599, 0.596, 0.603, 0.589, 0.616, 0.599, 0.6, 0.617, 0.595, 0.592
-    # Whatsup_B: 0.25245098039215685, 0.2426470588235294, 0.27450980392156865, 0.25, 0.2181372549019608
+
     
     # ------------------------------------- delete_image_pos_embed
     # test_delete_image_pos_embed(
@@ -1555,15 +1429,6 @@ if __name__ == "__main__":
     #     accs.append(acc)
     # print(f"accs: {accs}")
     
-    # qwen2_5_vl:
-    # save vision token (top1000): (0.611) 0.621, 0.609, 0.617, 0.619, 0.608, 0.611, 0.598, 0.606, 0.615, 0.609, 0.607
-    # ! save vision token (randn1000): (0.615) 0.608, 0.607, 0.61, 0.611, 0.614, 0.612, 0.619, 0.625, 0.622, 0.616, 0.616, 0.614, 0.617, 0.62, 0.618
-    # delete vision token (top1000): 0.609, 0.606, 0.614, 0.603, 0.607, 
-    # delete vision token (randn1000): (avg 0.609) 0.603, 0.606, 0.611, 0.605, 0.616, 0.607, 0.612, 0.607, 0.604, 0.616
-    # llava1_5_7b: 
-    # save vision token (randn1000): (0.583) 0.576, 0.584, 0.588, 0.6, 0.598, 0.57, 0.572, 0.609, 0.554, 0.579
-    # internvl2_5_8b: 0.618, 0.621, 0.646
-    # save vision token (randn1000): (0.622) 0.621, 0.646, 0.605, 0.614, 0.624
     
     # ------------------------------------- shuffle_image_pos_ids
     # accs = []
@@ -1577,10 +1442,6 @@ if __name__ == "__main__":
     # )
     #     accs.append(acc)
     # print(f"accs: {accs}")
-    # qwen2_5_vl:
-    # top1000: 0.614, 0.612, 0.608, 0.608, 0.603   
-    # random: (0.608) 0.606, 0.597, 0.609, 0.622, 0.608, 0.603, 0.589, 0.608, 0.625, 0.597, 0.594, 0.602, 0.621, 0.616, 0.623
-    # llava1_5_7b: (0.585) 0.619, 0.554, 0.582, 0.602, 0.578, 0.59, 0.569, 0.576, 0.592, 0.591
     
     
     # plot_delete_pos_embed(region="vit", layer_by_layer="and_all")

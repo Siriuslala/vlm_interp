@@ -2043,10 +2043,11 @@ def seg_with_unembedding_tokens(
                 # get the unique labels and their counts
                 # label_counts = Counter(text_tokens)  # {label: count, ...}
                 
-                if "2354453" in image_path and not delete_pos_embed:
-                    text_tokens_copy = text_tokens
-                else:
-                    text_tokens_copy = copy.deepcopy(text_tokens)
+                # if "2354453" in image_path and not delete_pos_embed:
+                #     text_tokens_copy = text_tokens
+                # else:
+                #     text_tokens_copy = copy.deepcopy(text_tokens)
+                text_tokens_copy = copy.deepcopy(text_tokens)
                 for i in range(len(text_tokens)):
                     if text_tokens[i] in class_names:
                         continue
@@ -4355,9 +4356,20 @@ def plot_hallucination():
         loose_values = [result["loose"][metric] for result in all_results]
         layer_ids = [result["layer_id"] + 1 for result in all_results]
         
+        # preds_strict = [result["preds_strict"] for result in all_results]  # (n_layers, n_samples)
+        # preds_loose = [result["preds_loose"] for result in all_results]
+        # labels = all_results[0]["labels"]  # (n_samples)
+        # strict_values = [f1_score(labels, preds_strict[i]) for i in range(len(all_results))]
+        # loose_values = [f1_score(labels, preds_loose[i]) for i in range(len(all_results))]
+        # # compute the standard error of the f1 scores in each layer (preds_strict[i] is the results in layer i (n_samples))
+        # strict_values_std_error = [np.std([preds_strict[i][j] == labels[j] for j in range(len(labels))]) / np.sqrt(len(labels)) for i in range(len(all_results))]
+        # loose_values_std_error = [np.std([preds_loose[i][j] == labels[j] for j in range(len(labels))]) / np.sqrt(len(labels)) for i in range(len(all_results))]
+
         plt.figure()
-        plt.plot(layer_ids, strict_values, label=f"{metric} (strict)", marker='o')
-        plt.plot(layer_ids, loose_values, label=f"{metric} (loose)", marker='x')
+        plt.plot(layer_ids, strict_values, label=f"{metric} (strict)", marker='o', color='blue')
+        plt.plot(layer_ids, loose_values, label=f"{metric} (loose)", marker='o', color='green')
+        # plt.fill_between(layer_ids, np.array(strict_values) - np.array(strict_values_std_error), np.array(strict_values) + np.array(strict_values_std_error), color='blue', alpha=0.2)
+        # plt.fill_between(layer_ids, np.array(loose_values) - np.array(loose_values_std_error), np.array(loose_values) + np.array(loose_values_std_error), color='orange', alpha=0.2)
         
         plt.xlabel("Layer ID")
         plt.ylabel(metric_name.capitalize())
@@ -4486,26 +4498,14 @@ if __name__ == "__main__":
     # image_path = root_dir / "test_figs/pope/bad_case/llava_pope_adversarial_Is there a dog in the image?_no/483.png"
     # image_path = root_dir / "test_figs/pope/bad_case/llava_pope_adversarial_Is there a fire hydrant in the image?_yes/2404.png"
     # image_path = root_dir / "test_figs/mme/code_0007.png"
-    image_path = root_dir / "test_figs/gqa/2332870.jpg"
-    check_emergence = False
-    select_unembedding_layer(device="cuda:3", model_name="qwen2_5_vl", image_path=image_path, check_emergence=check_emergence)  # "llava1_5_7b", "qwen2_5_vl"
+    # image_path = root_dir / "test_figs/gqa/2332870.jpg"
+    # check_emergence = False
+    # select_unembedding_layer(device="cuda:3", model_name="qwen2_5_vl", image_path=image_path, check_emergence=check_emergence)  # "llava1_5_7b", "qwen2_5_vl"
     
     # select_unembedding_layer_batch(device="cuda:2", model_name="llava1_5_7b", batch_size=8, bi_dir_att=True)
     
     # check_vit_hallucination("llava1_5_7b", "pope_random", "cuda:1", batch_size=8, llm_layer_id=25)
     # plot_hallucination()
-    # pope random: 
-    # if image_token == entity_tokens[0]:
-    # strict_acc: 0.8106035345115038, strict_precision: 0.847647498132935, strict_recall: 0.7571714476317545, strict_f1: 0.7998590556730092
-    # loose_acc: 0.8189396465488497, loose_precision: 0.7828402366863906, loose_recall: 0.8825883922615076, loose_f1: 0.8297271872060207
-    # only exact match:
-    # strict_acc: 0.6652217405801933, strict_precision: 0.9643527204502814, strict_recall: 0.342895263509006, strict_f1: 0.5059055118110236
-    # loose_acc: 0.7162387462487496, loose_precision: 0.9354838709677419, loose_recall: 0.46430953969312877, loose_f1: 0.620597414177441
-
-    # pope popular:
-    # strict_acc: 0.7066666666666667, strict_precision: 0.6876513317191283, strict_recall: 0.7573333333333333, strict_f1: 0.7208121827411168
-    # loose_acc: 0.6756666666666666, loose_precision: 0.6242338519566243, loose_recall: 0.8826666666666667, loose_f1: 0.7312896989781829
-
     
     # ------------------------------------- test_segmentation_map -------------------------------------
     # 2354453, 2332870, 2338056, 2339558, 2369060, 2416755
