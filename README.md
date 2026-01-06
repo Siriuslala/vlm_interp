@@ -61,52 +61,18 @@ WORK_DIR=/path/to/your/work  # intermediate files (e.g., model checkpoints, log 
 ├── .env_example
 ├── eval  # evaluation scripts
 │   ├── CHAIR
-│   │   └── utils
-│   │       ├── __init__.py
-│   │       ├── chair.py
-│   │       ├── chair_new.py
-│   │       ├── im_consistency.py
-│   │       ├── lm_consistency.py
-│   │       ├── misc.py
-│   │       ├── pattern_en.py
-│   │       └── synonyms.txt
 │   ├── COCO
-│   │   └── coco.py
 │   ├── GQA
-│   │   ├── eval.bash
-│   │   ├── eval.py
-│   │   ├── gqa.py
-│   │   └── readme.txt
 │   ├── MMBench
-│   │   └── mmb.py
 │   ├── MME
-│   │   ├── calculation.py
-│   │   └── mme.py
 │   ├── POPE
-│   │   └── pope.py
 │   ├── SQA
-│   │   └── sqa.py
 │   ├── TextVQA
-│   │   └── textvqa.py
 │   ├── VQA
-│   │   ├── results
-│   │   │   └── test_llm_image_token_truncation-method_5
-│   │   │       └── llava1_5_7b
-│   │   ├── vqa.py
-│   │   └── vqa_eval.py
 │   ├── VSR
-│   │   └── vsr.py
 │   ├── WhatsUp
-│   │   ├── bboxes
-│   │   │   ├── bbox.jsonl
-│   │   │   ├── label
+│   │   ├── bboxes  # our annotations for WhatsUp
 │   │   └── dataset_zoo
-│   │       ├── __init__.py
-│   │       ├── aro_datasets.py
-│   │       ├── constants.py
-│   │       ├── perturbations.py
-│   │       ├── retrieval.py
-│   │       └── utils.py
 │   ├── custom_data.py
 │   └── data_utils.py
 ├── font
