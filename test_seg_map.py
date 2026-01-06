@@ -2814,8 +2814,6 @@ def analyze_logit_lens(model_name, image_path, model_config=None, inputs=None, d
         for obj_name, obj_text_tokens in object_text_tokens.items():
             f.write({"object": obj_name, "text_tokens": obj_text_tokens})
     
-    # draw
-
 def analyze_semantic_segmentation(image_ids=[], model_name="", delete_pos_embed=False):
     exp_dir = root_dir / "figures/seg_with_unembedding_tokens"
     if delete_pos_embed:
