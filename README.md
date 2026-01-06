@@ -83,13 +83,6 @@ WORK_DIR=/path/to/your/work  # intermediate files (e.g., model checkpoints, log 
 ├── patch  # monkey patch files
 │   ├── intern_2_5_hijack.py
 │   ├── internvl2_5_utils
-│   │   ├── configuration_intern_vit.py
-│   │   ├── configuration_internlm2.py
-│   │   ├── configuration_internvl_chat.py
-│   │   ├── conversation.py
-│   │   ├── modeling_intern_vit.py
-│   │   ├── modeling_internlm2.py
-│   │   └── modeling_internvl_chat.py
 │   ├── llava1_5_vl_hijack.py
 │   ├── monkey_patch.py
 │   └── qwen2_5_vl_hijack.py
